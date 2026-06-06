@@ -78,7 +78,7 @@ export default function IntegrationsTab({
           {/* Webhook Enable Switch */}
           <div className="switch-container" style={{ padding: '16px', background: 'rgba(255, 255, 255, 0.01)', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
             <div style={{ flex: 1 }}>
-              <span style={{ fontSize: '0.95rem', fontWeight: '600', display: 'block' }}>A.aura 온톨로지 Webhook 전송 활성화</span>
+              <span style={{ fontSize: '0.95rem', fontWeight: '600', display: 'block', color: 'var(--text-primary)' }}>A.aura 온톨로지 Webhook 전송 활성화</span>
               <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '2px' }}>
                 활성화되면 설문 최종 진단 결과 도출 시 수집된 Entity ID 배열 패킷을 목적지 서버로 POST 전송합니다.
               </p>
