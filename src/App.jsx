@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { initialQuestions } from './data/initialQuestions';
+import { interstitials as initialInterstitials } from './data/interstitials';
 import QuestionsTab from './components/QuestionsTab';
 import FormulasTab from './components/FormulasTab';
 import LogicTab from './components/LogicTab';
 import InterstitialsTab from './components/InterstitialsTab';
 import PreviewTab from './components/PreviewTab';
 import IntegrationsTab from './components/IntegrationsTab';
+
 
 const defaultOptionValueMaps = {
   Q9: ["FILTER.SAFE_MODE.ATOPIC", "FILTER.SAFE_MODE.ATOPIC", "FILTER.SAFE_MODE.ATOPIC", "FILTER.SAFE_MODE.ATOPIC", "FILTER.SAFE_MODE.ATOPIC", "FILTER.SAFE_MODE.ATOPIC", "FILTER.SAFE_MODE.NONE"],
@@ -33,6 +35,7 @@ export default function App() {
   });
   const [activeTab, setActiveTab] = useState('questions');
   const [theme, setTheme] = useState('light');
+  const [interstitials, setInterstitials] = useState(initialInterstitials);
 
   // Webhook & API integration state
   const [webhookUrl, setWebhookUrl] = useState('https://api.a-aura.com/v1/recommendation');
@@ -207,7 +210,7 @@ export default function App() {
           <QuestionsTab questions={questions} setQuestions={setQuestions} />
         )}
         {activeTab === 'interstitials' && (
-          <InterstitialsTab />
+          <InterstitialsTab interstitials={interstitials} setInterstitials={setInterstitials} />
         )}
         {activeTab === 'formulas' && (
           <FormulasTab 
@@ -228,6 +231,7 @@ export default function App() {
             webhookUrl={webhookUrl}
             webhookEnabled={webhookEnabled}
             addWebhookLog={addWebhookLog}
+            interstitials={interstitials}
           />
         )}
         {activeTab === 'integrations' && (

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { interstitials } from '../data/interstitials';
+import { interstitials as staticInterstitials } from '../data/interstitials';
 
 // Country list for Q50 sub-dropdown
 const countries = [
@@ -49,8 +49,10 @@ export default function PreviewTab({
   },
   webhookUrl = 'https://api.a-aura.com/v1/recommendation',
   webhookEnabled = true,
-  addWebhookLog = () => {}
+  addWebhookLog = () => {},
+  interstitials: propInterstitials
 }) {
+  const activeInterstitials = propInterstitials || staticInterstitials;
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(-1); // -1 is Start Screener
   const [answers, setAnswers] = useState({});
@@ -81,10 +83,10 @@ export default function PreviewTab({
     setTags([]);
     
     // Play Start Screener Interstitial
-    setInterstitial(interstitials.START);
+    setInterstitial(activeInterstitials.START);
     setProgressWidth(0);
     setTimeout(() => {
-      setProgressWidth(interstitials.START.progress);
+      setProgressWidth(activeInterstitials.START.progress);
     }, 100);
 
     setTimeout(() => {
@@ -141,11 +143,11 @@ export default function PreviewTab({
     const value = overrideVal !== undefined ? overrideVal : answers[q.id];
 
     // Check if break screen needs to show
-    const breakKeys = Object.keys(interstitials).filter(k => interstitials[k].triggerQuestion === qId);
+    const breakKeys = Object.keys(activeInterstitials).filter(k => activeInterstitials[k].triggerQuestion === qId);
     
     if (breakKeys.length > 0) {
       const breakKey = breakKeys[0];
-      const screen = interstitials[breakKey];
+      const screen = activeInterstitials[breakKey];
       
       setInterstitial(screen);
       setProgressWidth(0);
@@ -1088,17 +1090,42 @@ export default function PreviewTab({
       {/* 3. Interstitial break overlay */}
       {interstitial && (
         <div className="interstitial-backdrop" style={{ zIndex: '200' }}>
-          <div className="interstitial-card animate-scale">
+          <div className="interstitial-card animate-scale" style={{ maxWidth: '500px' }}>
             <span className="badge badge-teal" style={{ marginBottom: '16px' }}>
               SECTION COMPLETE ({progressWidth}%)
             </span>
-            <h2 style={{ fontSize: '1.6rem', color: '#fff', marginBottom: '12px', fontFamily: 'var(--font-display)' }}>
+            
+            {interstitial.imageUrl && (
+              <div style={{ 
+                width: '100%', 
+                height: '180px', 
+                overflow: 'hidden', 
+                borderRadius: '8px', 
+                marginBottom: '16px',
+                border: '1px solid var(--border-color)',
+                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
+              }}>
+                <img 
+                  src={interstitial.imageUrl} 
+                  alt={interstitial.title} 
+                  className="zoom-in-slow"
+                  style={{ 
+                    width: '100%', 
+                    height: '100%', 
+                    objectFit: 'cover',
+                    display: 'block'
+                  }} 
+                />
+              </div>
+            )}
+
+            <h2 style={{ fontSize: '1.45rem', color: '#fff', marginBottom: '12px', fontFamily: 'var(--font-display)' }}>
               {interstitial.title}
             </h2>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: '1.6', marginBottom: '32px' }}>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: '1.5', marginBottom: '24px' }}>
               {interstitial.subtitle}
             </p>
-            <div className="progress-bar-container">
+            <div className="progress-bar-container" style={{ marginTop: '16px' }}>
               <div 
                 className="progress-bar-fill" 
                 style={{ width: `${progressWidth}%`, transition: 'width 0.8s cubic-bezier(0.4, 0, 0.2, 1)' }}
